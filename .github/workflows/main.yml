@@ -35,6 +35,8 @@ jobs:
 
     - name: Check PR limit
       run: |
+        event_data_s=${{ github.event }}
+        echo "EVENTDATA: $event_data_s"
         contributor=${{ github.event.issue.user.login }}
         echo "Error: $contributor current"
 # counter=$(grep -E "^$contributor:" pr_counter.txt | cut -d ':' -f2 || echo "0")
