@@ -1,35 +1,66 @@
-name: Trigger on Label Assignment
-
-on:
-  pull_request:
-    types:
-      - labeled
+on: issue_comment
 
 jobs:
-  check-label-assignment:
+  pr_commented:
+    # This job only runs for pull request comments
+    name: PR comment
+    if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check for Label Assignment
-      id: check-label
-      run: |
-        labels=$(echo "${{ github.event.pull_request.labels }}" | jq -r '.[].name')
-        if [ -n "${labels}" ]; then
-          echo "Labels Assigned: ${labels}"
-          echo "::set-output name=labels::${labels}"
-        else
-          echo "No labels assigned to the pull request."
-          exit 1
-        fi
+      - run: |
+          echo A comment on PR $NUMBER
+        env:
+          NUMBER: ${{ github.event.issue.number }}
 
-  trigger-workflow-if-label-assigned:
-    needs: check-label-assignment
+  issue_commented:
+    # This job only runs for issue comments
+    name: Issue comment
+    if: ${{ !github.event.issue.pull_request }}
     runs-on: ubuntu-latest
-
     steps:
-    - name: Trigger Workflow if Label Assigned
-      if: ${{ needs.check-label.outputs.labels != '' }}
-      run: echo "Label assigned to PR. Triggering workflow."
+      - run: |
+          echo A comment on issue $NUMBER
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+
+
+
+
+
+
+###############################################
+# name: Trigger on Label Assignment
+
+# on:
+#   pull_request:
+#     types:
+#       - labeled
+
+# jobs:
+#   check-label-assignment:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Check for Label Assignment
+#       id: check-label
+#       run: |
+#         labels=$(echo "${{ github.event.pull_request.labels }}" | jq -r '.[].name')
+#         if [ -n "${labels}" ]; then
+#           echo "Labels Assigned: ${labels}"
+#           echo "::set-output name=labels::${labels}"
+#         else
+#           echo "No labels assigned to the pull request."
+#           exit 1
+#         fi
+
+#   trigger-workflow-if-label-assigned:
+#     needs: check-label-assignment
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Trigger Workflow if Label Assigned
+#       if: ${{ needs.check-label.outputs.labels != '' }}
+#       run: echo "Label assigned to PR. Triggering workflow."
 
 
 
