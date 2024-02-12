@@ -35,7 +35,7 @@ jobs:
 
     - name: Check PR limit
       run: |
-        event_data_s=${{ github.event }}
+        event_data_s=${{ toJson(github.event) }}
         echo "EVENTDATA: $event_data_s"
         contributor=${{ github.event.issue.user.login }}
         echo "Error: $contributor current"
