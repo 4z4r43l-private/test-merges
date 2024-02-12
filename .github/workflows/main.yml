@@ -32,6 +32,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        repository: prnjl117/test-merges
+        ref: main
 
     - name: Check PR limit
       run: |
