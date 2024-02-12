@@ -24,7 +24,27 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
 
 
+  check-pr-limit:
+    runs-on: ubuntu-latest
+    needs: pr_commented
+    if: success()
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
+    - name: Check PR limit
+      run: |
+        contributor=${{ github.event.pull_request.user.login }}
+        echo "Error: $contributor current"
+# counter=$(grep -E "^$contributor:" pr_counter.txt | cut -d ':' -f2 || echo "0")
+
+# if [ $counter -ge 3 ]; then
+#   echo "Error: $contributor has exceeded the allowed number of pull requests."
+#   exit 1
+# fi
+
+# # echo "$contributor:$((counter + 1))" >> pr_counter.txt
 
 
 
