@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check for Issue Reference
+    - name: Check for Issue Reference Pranjal
       id: check-issue
       run: |
         issue_numbers=$(echo "${{ github.event.pull_request.body }}" | grep -Eo '#[0-9]+' | grep -Eo '[0-9]+')
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Trigger Workflow if Issue Referenced
+    - name: Trigger Workflow if Issue Referenced Pranjal
       if: ${{ needs.check-issue.outputs.issue_numbers != '' }}
       run: echo "Issue referenced in PR. Triggering workflow."
 
