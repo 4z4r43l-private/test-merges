@@ -1,57 +1,102 @@
-name: Trigger on Issue Reference
+name: Trigger on Label Assignment
 
 on:
   pull_request:
     types:
-      - opened
-      - synchronize
-      - reopened
+      - labeled
 
 jobs:
-  check-issue-reference:
+  check-label-assignment:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check for Issue Reference
-      id: check-issue
+    - name: Check for Label Assignment
+      id: check-label
       run: |
-        issue_numbers=$(echo "${{ github.event.pull_request.body }}" | grep -Eo '#[0-9]+' | grep -Eo '[0-9]+')
-        if [ -n "${issue_numbers}" ]; then
-          echo "Referenced Issues: ${issue_numbers}"
-          echo "::set-output name=issue_numbers::${issue_numbers}"
+        labels=$(echo "${{ github.event.pull_request.labels }}" | jq -r '.[].name')
+        if [ -n "${labels}" ]; then
+          echo "Labels Assigned: ${labels}"
+          echo "::set-output name=labels::${labels}"
         else
-          echo "No referenced issues found in the pull request body."
+          echo "No labels assigned to the pull request."
           exit 1
         fi
 
-  trigger-workflow-if-issue-referenced:
-    needs: check-issue-reference
+  trigger-workflow-if-label-assigned:
+    needs: check-label-assignment
     runs-on: ubuntu-latest
 
     steps:
-    - name: Trigger Workflow if Issue Referenced
-      if: ${{ needs.check-issue.outputs.issue_numbers != '' }}
-      run: echo "Issue referenced in PR. Triggering workflow."
+    - name: Trigger Workflow if Label Assigned
+      if: ${{ needs.check-label.outputs.labels != '' }}
+      run: echo "Label assigned to PR. Triggering workflow."
 
-  auto-approve:
-    runs-on: ubuntu-latest
-    needs: trigger-workflow-if-issue-referenced
-    if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
+
+
+
+
+
+
+
+
+
+
+
+#################################################
+# name: Trigger on Issue Reference
+
+# on:
+#   pull_request:
+#     types:
+#       - opened
+#       - synchronize
+#       - reopened
+
+# jobs:
+#   check-issue-reference:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Check for Issue Reference
+#       id: check-issue
+#       run: |
+#         issue_numbers=$(echo "${{ github.event.pull_request.body }}" | grep -Eo '#[0-9]+' | grep -Eo '[0-9]+')
+#         if [ -n "${issue_numbers}" ]; then
+#           echo "Referenced Issues: ${issue_numbers}"
+#           echo "::set-output name=issue_numbers::${issue_numbers}"
+#         else
+#           echo "No referenced issues found in the pull request body."
+#           exit 1
+#         fi
+
+#   trigger-workflow-if-issue-referenced:
+#     needs: check-issue-reference
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Trigger Workflow if Issue Referenced
+#       if: ${{ needs.check-issue.outputs.issue_numbers != '' }}
+#       run: echo "Issue referenced in PR. Triggering workflow."
+
+#   auto-approve:
+#     runs-on: ubuntu-latest
+#     needs: trigger-workflow-if-issue-referenced
+#     if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
     
-    steps:
-    - name: Auto-approve pull request
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const resp = await github.pulls.createReview({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.payload.workflow_run.conclusion === 'success' ? context.payload.workflow_run.pull_requests[0].number : context.payload.workflow_run.pull_requests[0].number,
-            event: 'APPROVE'
-          });
-          console.log(resp);
-
+#     steps:
+#     - name: Auto-approve pull request
+#       uses: actions/github-script@v6
+#       with:
+#         github-token: ${{ secrets.GITHUB_TOKEN }}
+#         script: |
+#           const resp = await github.pulls.createReview({
+#             owner: context.repo.owner,
+#             repo: context.repo.repo,
+#             pull_number: context.payload.workflow_run.conclusion === 'success' ? context.payload.workflow_run.pull_requests[0].number : context.payload.workflow_run.pull_requests[0].number,
+#             event: 'APPROVE'
+#           });
+#           console.log(resp);
+##############################################################################
 
 # name: Trigger on Issue Reference
 
