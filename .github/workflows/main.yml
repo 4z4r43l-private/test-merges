@@ -3,7 +3,7 @@ on: issue_comment
 jobs:
   pr_commented:
     # This job only runs for pull request comments
-    name: PR comment
+    name: PR comment pranjal
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
@@ -14,7 +14,7 @@ jobs:
 
   issue_commented:
     # This job only runs for issue comments
-    name: Issue comment
+    name: Issue comment pranjal
     if: ${{ !github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
