@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check for Issue Reference Pranjal
+    - name: Check for Issue Reference Pranjal 2
       id: check-issue
       run: |
         issue_numbers=$(echo "${{ github.event.pull_request.body }}" | grep -Eo '#[0-9]+' | grep -Eo '[0-9]+')
